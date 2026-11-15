@@ -1,0 +1,10 @@
+mechanism "HBr addition to propene (Markovnikov)"
+
+C[CH:1]=[CH2:2] + [H:3][Br:4]
+  bond 1-2 -> 2-3
+  bond 3-4 -> 4
+-->
+C[CH+:1][CH2:2][H:3] + [Br-:4]
+  lp 4 -> 1
+-->
+C[CH:1]([Br:4])[CH2:2][H:3]

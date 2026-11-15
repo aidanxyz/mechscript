@@ -1,0 +1,15 @@
+mechanism "Saponification of methyl acetate"
+
+C[C:1](=[O:2])[O:3]C + [O-:4][H:5]
+  lp 4 -> 1
+  bond 1-2 -> 2
+-->
+C[C:1]([O-:2])([O:4][H:5])[O:3]C
+  lp 2 -> 2-1
+  bond 1-3 -> 3
+-->
+C[C:1](=[O:2])[O:4][H:5] + C[O-:3]
+  lp 3 -> 5
+  bond 5-4 -> 4
+-->
+C[C:1](=[O:2])[O-:4] + C[O:3][H:5]

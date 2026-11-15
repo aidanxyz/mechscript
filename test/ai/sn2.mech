@@ -1,0 +1,7 @@
+mechanism "SN2: cyanide + bromoethane"
+
+N#[C-:1] + [CH2:2](C)[Br:3]
+  lp 1 -> 2
+  bond 2-3 -> 3
+--> "DMSO, backside attack"
+N#[C:1][CH2:2]C + [Br-:3]

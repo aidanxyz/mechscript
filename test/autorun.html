@@ -1,0 +1,110 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>MechScript auto-render demo</title>
+<style>body{font-family:system-ui;max-width:1000px;margin:24px auto;padding:0 16px;color:#111;background:#fff} h2{font-size:15px;margin-top:32px} pre{background:#f6f6f6;padding:10px}</style>
+</head><body>
+<h1>Mechanisms written by Claude from the one-page spec</h1>
+<p>Each block below is a plain <code>```mechanism</code> code block. Including <code>dist/mechscript.js</code> replaces them with drawings.</p>
+<h2>aldol.mech</h2>
+<pre><code class="language-mechanism">mechanism &quot;Base-catalysed aldol addition of acetaldehyde&quot;
+
+# 1. enolate formation: hydroxide removes an alpha proton
+[OH-:1] + [H:2][CH2:3][CH:4]=[O:5] + C[CH:6]=[O:7]
+  lp 1 -&gt; 2
+  bond 2-3 -&gt; 3-4
+  bond 4-5 -&gt; 5
+&lt;=&gt; &quot;NaOH, H2O&quot;
+# 2. enolate alpha carbon attacks the carbonyl of a second acetaldehyde
+[H:2][OH:1] + [CH2:3]=[CH:4][O-:5] + C[CH:6]=[O:7]
+  lp 5 -&gt; 5-4
+  bond 4-3 -&gt; 3-6
+  bond 6-7 -&gt; 7
+&lt;=&gt;
+# 3. alkoxide is protonated by water, regenerating hydroxide
+[H:2][OH:1] + C[CH:6]([O-:7])[CH2:3][CH:4]=[O:5]
+  lp 7 -&gt; 2
+  bond 1-2 -&gt; 1
+&lt;=&gt;
+C[CH:6]([O:7][H:2])[CH2:3][CH:4]=[O:5] + [OH-:1]
+</code></pre>
+<h2>e2.mech</h2>
+<pre><code class="language-mechanism">mechanism &quot;E2: 2-bromo-2-methylpropane + hydroxide&quot;
+
+[OH-:1] + [H:2][CH2:3][C:4](C)(C)[Br:5]
+  lp 1 -&gt; 2
+  bond 2-3 -&gt; 3-4
+  bond 4-5 -&gt; 5
+--&gt; &quot;heat&quot;
+[H:2][OH:1] + [CH2:3]=[C:4](C)C + [Br-:5]
+</code></pre>
+<h2>eas_bromination.mech</h2>
+<pre><code class="language-mechanism">mechanism &quot;Electrophilic aromatic bromination of benzene&quot;
+
+# 1. activation of Br2 by the Lewis acid FeBr3
+[H:7][C:1]1=[CH:2][CH:3]=[CH:4][CH:5]=[CH:6]1 + [Br:8][Br:9] + [Br:11][Fe:10]([Br:12])[Br:13]
+  lp 9 -&gt; 10
+--&gt; &quot;FeBr3&quot;
+# 2. the arene pi bond attacks the terminal bromine: sigma complex (arenium ion)
+[H:7][C:1]1=[CH:2][CH:3]=[CH:4][CH:5]=[CH:6]1 + [Br:8][Br+:9][Fe-:10]([Br:11])([Br:12])[Br:13]
+  bond 2-1 -&gt; 1-8
+  bond 8-9 -&gt; 9
+--&gt;
+# sigma complex resonance forms
+[H:7][C:1]1([Br:8])[CH+:2][CH:3]=[CH:4][CH:5]=[CH:6]1 + [Br:9][Fe-:10]([Br:11])([Br:12])[Br:13]
+  bond 4-3 -&gt; 3-2
+&lt;-&gt;
+[H:7][C:1]1([Br:8])[CH:2]=[CH:3][CH+:4][CH:5]=[CH:6]1 + [Br:9][Fe-:10]([Br:11])([Br:12])[Br:13]
+  bond 6-5 -&gt; 5-4
+&lt;-&gt;
+# 3. FeBr4- removes the ipso proton; rearomatisation regenerates FeBr3
+[H:7][C:1]1([Br:8])[CH:2]=[CH:3][CH:4]=[CH:5][CH+:6]1 + [Br:9][Fe-:10]([Br:11])([Br:12])[Br:13]
+  bond 10-11 -&gt; 11-7
+  bond 7-1 -&gt; 1-6
+--&gt;
+[Br:8][C:1]1=[CH:6][CH:5]=[CH:4][CH:3]=[CH:2]1 + [H:7][Br:11] + [Br:9][Fe:10]([Br:12])[Br:13]
+</code></pre>
+<h2>ester_hydrolysis.mech</h2>
+<pre><code class="language-mechanism">mechanism &quot;Acid-catalysed hydrolysis of ethyl acetate&quot;
+
+# 1. protonation of the carbonyl oxygen by hydronium
+C[C:2](=[O:1])[O:3][CH2:4]C + [H:5][OH2+:6] + [H:8][OH:7]
+  lp 1 -&gt; 5
+  bond 5-6 -&gt; 6
+&lt;=&gt; &quot;H3O+&quot;
+# 2. water attacks the activated carbonyl carbon
+C[C:2](=[O+:1][H:5])[O:3][CH2:4]C + [OH2:6] + [H:8][OH:7]
+  lp 7 -&gt; 2
+  bond 1-2 -&gt; 1
+&lt;=&gt;
+# 3. deprotonation of the added water (oxonium) by water
+C[C:2]([O:1][H:5])([OH+:7][H:8])[O:3][CH2:4]C + [OH2:6]
+  lp 6 -&gt; 8
+  bond 7-8 -&gt; 7
+&lt;=&gt;
+# 4. protonation of the ethoxy oxygen
+C[C:2]([O:1][H:5])([OH:7])[O:3][CH2:4]C + [H:8][OH2+:6]
+  lp 3 -&gt; 8
+  bond 6-8 -&gt; 6
+&lt;=&gt;
+# 5. reform C=O, ethanol leaves
+C[C:2]([O:1][H:5])([OH:7])[O+:3]([H:8])[CH2:4]C + [OH2:6]
+  lp 1 -&gt; 1-2
+  bond 2-3 -&gt; 3
+&lt;=&gt;
+# 6. deprotonation regenerates the acid catalyst
+C[C:2](=[O+:1][H:5])[OH:7] + [H:8][O:3][CH2:4]C + [OH2:6]
+  lp 6 -&gt; 5
+  bond 1-5 -&gt; 1
+&lt;=&gt;
+C[C:2](=[O:1])[OH:7] + [H:8][O:3][CH2:4]C + [H:5][OH2+:6]
+</code></pre>
+<h2>sn2.mech</h2>
+<pre><code class="language-mechanism">mechanism &quot;SN2: cyanide + bromoethane&quot;
+
+N#[C-:1] + [CH2:2](C)[Br:3]
+  lp 1 -&gt; 2
+  bond 2-3 -&gt; 3
+--&gt; &quot;DMSO, backside attack&quot;
+N#[C:1][CH2:2]C + [Br-:3]
+</code></pre>
+<script src="../dist/mechscript.js" data-rdkit="../dist/RDKit_minimal.js"></script>
+</body></html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MechScript playground</title>
+<style>
+  :root { --bg:#fbfaf8; --panel:#fff; --ink:#1d1d1f; --muted:#6b6b70; --line:#e4e2dd; --accent:#d0342c; --err:#b42318; --warn:#9a6700; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { font: 14px/1.4 system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; }
+  header { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-bottom: 1px solid var(--line); background: var(--panel); flex-wrap: wrap; }
+  header h1 { font-size: 16px; margin: 0 8px 0 0; letter-spacing: -0.01em; }
+  header h1 span { color: var(--accent); }
+  select, button { font: inherit; border: 1px solid var(--line); background: #fff; border-radius: 6px; padding: 5px 9px; color: var(--ink); }
+  button { cursor: pointer; }
+  button:hover { background: #f3f1ed; }
+  .spacer { flex: 1; }
+  label.chk { display: inline-flex; gap: 4px; align-items: center; color: var(--muted); }
+  main { flex: 1; display: grid; grid-template-columns: minmax(300px, 38%) 1fr; min-height: 0; }
+  #left { display: flex; flex-direction: column; border-right: 1px solid var(--line); min-height: 0; }
+  #code { flex: 1; width: 100%; border: 0; resize: none; padding: 14px; font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--panel); color: var(--ink); outline: none; tab-size: 2; }
+  #problems { max-height: 32%; overflow: auto; border-top: 1px solid var(--line); background: #fff; font-size: 12.5px; }
+  #problems:empty::before { content: "No problems."; display: block; padding: 8px 14px; color: var(--muted); }
+  #problems div { padding: 5px 14px; cursor: pointer; border-bottom: 1px solid #f2f0ec; }
+  #problems div:hover { background: #faf8f4; }
+  #problems .error b { color: var(--err); } #problems .warning b { color: var(--warn); }
+  #right { position: relative; display: flex; flex-direction: column; min-height: 0; }
+  #stage { flex: 1; overflow: auto; padding: 24px; }
+  #drawing svg { display: block; color: var(--ink); }
+  #status { position: absolute; right: 12px; bottom: 10px; font-size: 12px; color: var(--muted); background: rgba(255,255,255,.85); padding: 2px 8px; border-radius: 4px; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; grid-template-rows: 45% 55%; } #left { border-right: 0; border-bottom: 1px solid var(--line); } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Mech<span>Script</span></h1>
+  <select id="examples" title="Load a reference mechanism"><option value="">Examples…</option></select>
+  <label class="chk"><input type="checkbox" id="opt-maps"> atom numbers</label>
+  <label class="chk"><input type="checkbox" id="opt-lp"> all lone pairs</label>
+  <span class="spacer"></span>
+  <button id="copy-prompt" title="Copy the one-page spec to paste into Claude">Copy spec for Claude</button>
+  <button id="share" title="Copy a link containing this mechanism">Copy link</button>
+  <button id="export-svg">SVG</button>
+  <button id="export-png">PNG</button>
+</header>
+<main>
+  <section id="left">
+    <textarea id="code" spellcheck="false" autocomplete="off" aria-label="MechScript code"></textarea>
+    <div id="problems" aria-live="polite"></div>
+  </section>
+  <section id="right">
+    <div id="stage"><div id="drawing"></div></div>
+    <div id="status"></div>
+  </section>
+</main>
+<script src="../dist/RDKit_minimal.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

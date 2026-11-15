@@ -1,0 +1,20 @@
+mechanism "Base-catalysed aldol addition of acetaldehyde"
+
+# 1. enolate formation: hydroxide removes an alpha proton
+[OH-:1] + [H:2][CH2:3][CH:4]=[O:5] + C[CH:6]=[O:7]
+  lp 1 -> 2
+  bond 2-3 -> 3-4
+  bond 4-5 -> 5
+<=> "NaOH, H2O"
+# 2. enolate alpha carbon attacks the carbonyl of a second acetaldehyde
+[H:2][OH:1] + [CH2:3]=[CH:4][O-:5] + C[CH:6]=[O:7]
+  lp 5 -> 5-4
+  bond 4-3 -> 3-6
+  bond 6-7 -> 7
+<=>
+# 3. alkoxide is protonated by water, regenerating hydroxide
+[H:2][OH:1] + C[CH:6]([O-:7])[CH2:3][CH:4]=[O:5]
+  lp 7 -> 2
+  bond 1-2 -> 1
+<=>
+C[CH:6]([O:7][H:2])[CH2:3][CH:4]=[O:5] + [OH-:1]

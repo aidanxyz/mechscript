@@ -1,0 +1,24 @@
+mechanism "Electrophilic aromatic bromination of benzene"
+
+# 1. activation of Br2 by the Lewis acid FeBr3
+[H:7][C:1]1=[CH:2][CH:3]=[CH:4][CH:5]=[CH:6]1 + [Br:8][Br:9] + [Br:11][Fe:10]([Br:12])[Br:13]
+  lp 9 -> 10
+--> "FeBr3"
+# 2. the arene pi bond attacks the terminal bromine: sigma complex (arenium ion)
+[H:7][C:1]1=[CH:2][CH:3]=[CH:4][CH:5]=[CH:6]1 + [Br:8][Br+:9][Fe-:10]([Br:11])([Br:12])[Br:13]
+  bond 2-1 -> 1-8
+  bond 8-9 -> 9
+-->
+# sigma complex resonance forms
+[H:7][C:1]1([Br:8])[CH+:2][CH:3]=[CH:4][CH:5]=[CH:6]1 + [Br:9][Fe-:10]([Br:11])([Br:12])[Br:13]
+  bond 4-3 -> 3-2
+<->
+[H:7][C:1]1([Br:8])[CH:2]=[CH:3][CH+:4][CH:5]=[CH:6]1 + [Br:9][Fe-:10]([Br:11])([Br:12])[Br:13]
+  bond 6-5 -> 5-4
+<->
+# 3. FeBr4- removes the ipso proton; rearomatisation regenerates FeBr3
+[H:7][C:1]1([Br:8])[CH:2]=[CH:3][CH:4]=[CH:5][CH+:6]1 + [Br:9][Fe-:10]([Br:11])([Br:12])[Br:13]
+  bond 10-11 -> 11-7
+  bond 7-1 -> 1-6
+-->
+[Br:8][C:1]1=[CH:6][CH:5]=[CH:4][CH:3]=[CH:2]1 + [H:7][Br:11] + [Br:9][Fe:10]([Br:12])[Br:13]

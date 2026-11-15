@@ -1,0 +1,23 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>MechScript gallery</title>
+<style>body{font-family:system-ui;margin:24px;background:#fff;color:#111} section{margin:0 0 28px;border-bottom:1px solid #eee;padding-bottom:16px} pre.err{color:#b42318;font-size:12px;white-space:pre-wrap}</style>
+<script src="../dist/mechscript.js" data-rdkit="../dist/RDKit_minimal.js" data-start-on-load="false"></script>
+</head><body>
+<h1>Gallery</h1><div id="out"></div>
+<script>
+(async () => {
+  const out = document.getElementById('out');
+  const maps = location.search.includes('maps');
+  const scale = Number(new URLSearchParams(location.search).get('scale') || 1);
+  const only = new URLSearchParams(location.search).get('only');
+  for (const ex of MechScript.examples) {
+    if (only && !ex.name.toLowerCase().startsWith(only.toLowerCase())) continue;
+    const r = await MechScript.render(ex.code, { showMaps: maps });
+    const s = document.createElement('section');
+    s.innerHTML = `<h3>${ex.name}</h3>` + r.svg + (r.errors.length || r.warnings.length ? `<pre class="err">${MechScript.formatProblems(r.doc)}</pre>` : '');
+    out.appendChild(s);
+    const svg = s.querySelector('svg'); svg.setAttribute('width', r.width*scale); svg.setAttribute('height', r.height*scale);
+  }
+  document.body.dataset.done = '1';
+})();
+</script></body></html>

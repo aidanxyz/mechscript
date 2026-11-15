@@ -1,0 +1,13 @@
+mechanism "SN1: hydrolysis of tert-butyl bromide"
+
+C[C:2](C)(C)[Br:1]
+  bond 2-1 -> 1
+--> "slow"
+C[C+:2](C)C + [Br-:1] + [H:4][OH:3]
+  lp 3 -> 2
+-->
+C[C:2](C)(C)[OH+:3][H:4] + [OH2:5]
+  lp 5 -> 4
+  bond 4-3 -> 3
+-->
+C[C:2](C)(C)[OH:3] + [H:4][OH2+:5]

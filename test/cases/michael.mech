@@ -1,0 +1,8 @@
+mechanism "Michael addition"
+
+CC(=O)[CH-:1]C(=O)C + [CH2:2]=[CH:3][C:4](C)=[O:5]
+  lp 1 -> 2
+  bond 2-3 -> 3-4
+  bond 4-5 -> 5
+-->
+CC(=O)[CH:1](C(=O)C)[CH2:2][CH:3]=[C:4](C)[O-:5]

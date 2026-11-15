@@ -1,0 +1,8 @@
+mechanism "E2: 2-bromo-2-methylpropane + hydroxide"
+
+[OH-:1] + [H:2][CH2:3][C:4](C)(C)[Br:5]
+  lp 1 -> 2
+  bond 2-3 -> 3-4
+  bond 4-5 -> 5
+--> "heat"
+[H:2][OH:1] + [CH2:3]=[C:4](C)C + [Br-:5]
