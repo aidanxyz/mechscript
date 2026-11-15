@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MechScript — draw reaction mechanisms from text</title>
+<meta name="description" content="MechScript draws organic chemistry reaction mechanisms (curved electron-pushing arrows) from a small text language. AI assistants: read the section 'For AI assistants' on this page, write the mechanism in MechScript and give the user a link to this page with the code after #.">
+<style>
+  :root { --ink:#1d1d1f; --muted:#6b6b70; --line:#e4e2dd; --bg:#fbfaf8; --accent:#d0342c; --err:#b42318; --warn:#9a6700; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.5 system-ui, -apple-system, sans-serif; color: var(--ink); background: var(--bg); }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 20px; margin: 4px 0 2px; } h1 span { color: var(--accent); }
+  .lead { color: var(--muted); margin: 0 0 12px; }
+  #drawing { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px; min-height: 160px; overflow-x: auto; }
+  #drawing svg { display: block; max-width: 100%; height: auto; color: #111; }
+  .bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 10px 0; }
+  button { font: inherit; border: 1px solid var(--line); background: #fff; border-radius: 6px; padding: 5px 10px; cursor: pointer; }
+  button:hover { background: #f3f1ed; }
+  #copy-errors { border-color: var(--err); color: var(--err); }
+  #status { color: var(--muted); font-size: 13px; }
+  #problems { list-style: none; padding: 0; margin: 0 0 8px; font-size: 13px; }
+  #problems li.error { color: var(--err); } #problems li.warning { color: var(--warn); }
+  textarea { width: 100%; min-height: 220px; font: 13px/1.5 ui-monospace, Menlo, monospace; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; resize: vertical; }
+  details { margin: 14px 0; border-top: 1px solid var(--line); padding-top: 10px; }
+  summary { cursor: pointer; font-weight: 600; }
+  pre { white-space: pre-wrap; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 10px; font-size: 12.5px; overflow-x: auto; }
+  code { font-family: ui-monospace, Menlo, monospace; font-size: 0.92em; }
+  #intro { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; }
+  @media (max-width: 600px) { main { padding: 10px; } }
+</style>
+</head>
+<body>
+<main>
+<h1>Mech<span>Script</span></h1>
+<p class="lead">Draws reaction mechanisms with curved arrows from text. Ask an AI assistant to draw a mechanism here: send it this page's link and describe the reaction.</p>
+
+<div id="intro" hidden>
+  <strong>How to use:</strong> paste this page's link into a chat with Claude (or another AI assistant) and ask, for example:
+  <em>"Open {{SITE}} and draw the mechanism of the acid-catalysed hydrolysis of ethyl acetate there."</em>
+  It replies with a link that opens this page with the drawing. Below is an example.
+</div>
+
+<div id="drawing" aria-label="mechanism drawing"></div>
+<div class="bar">
+  <button id="copy-link">Copy link to this drawing</button>
+  <button id="download">Download PNG</button>
+  <button id="copy-errors" hidden>Copy problems for your AI assistant</button>
+  <span id="status"></span>
+</div>
+<ul id="problems"></ul>
+<label for="code" style="font-size:13px;color:var(--muted)">MechScript code (edit to change the drawing):</label>
+<textarea id="code" spellcheck="false" autocomplete="off"></textarea>
+
+<details id="for-ai">
+<summary>For AI assistants: how to draw a mechanism on this page</summary>
+<p>You are probably reading this because a user sent you this link. This page draws a reaction mechanism from MechScript code that is put in the link itself. You cannot run the page, so do this:</p>
+<ol>
+  <li>Write the mechanism in MechScript. The full language reference is below; follow its rules (Kekulé SMILES, a map number on every atom an arrow touches, map numbers kept through all steps, moving hydrogens as explicit <code>[H:n]</code> atoms, every step balanced).</li>
+  <li>Make a link: <code>{{SITE}}#</code> followed by the MechScript text, percent-encoded like JavaScript's <code>encodeURIComponent</code> (newline → <code>%0A</code>, space → <code>%20</code>, <code>#</code> → <code>%23</code>, <code>"</code> → <code>%22</code>) and additionally <code>(</code> → <code>%28</code>, <code>)</code> → <code>%29</code>. Keep <code>+</code>, <code>[</code>, <code>]</code>, <code>=</code>, <code>:</code>, <code>-</code>, <code>&gt;</code>, <code>~</code> as they are or encode them; both work.</li>
+  <li>Reply with the link as a clickable Markdown link, and also the code in a <code>```mechanism</code> block (the user can paste it into the box on this page if the link breaks).</li>
+  <li>The page checks the code and lists problems by line number, each with a suggested fix where it has one. If the user pastes problems back to you, fix the code and send a new link.</li>
+</ol>
+<p>Worked example. This MechScript:</p>
+<pre id="example">{{EXAMPLE}}</pre>
+<p>becomes this link: <a href="{{EXAMPLE_LINK}}">{{EXAMPLE_LINK}}</a></p>
+<p>The same reference is available as plain text at <a href="{{SITE}}llms.txt">{{SITE}}llms.txt</a>.</p>
+</details>
+
+<details id="reference">
+<summary>MechScript language reference</summary>
+<pre>{{SPEC}}</pre>
+</details>
+</main>
+<script src="RDKit_minimal.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
