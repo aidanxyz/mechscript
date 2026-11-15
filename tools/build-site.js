@@ -31,8 +31,8 @@ const llms = `# MechScript
 
 ## How to draw a mechanism for a user
 
-1. Write the mechanism in MechScript (reference below).
-2. Link: ${SITE}# followed by the MechScript text percent-encoded like encodeURIComponent (newline %0A, space %20, # %23, " %22), plus ( %28 and ) %29.
+1. Write the mechanism in MechScript (reference below). Most important rules: Kekulé SMILES; a map number on every atom an arrow touches; numbers kept on the same atoms through all steps; moving hydrogens as explicit [H:n] atoms; charges in brackets; each species line is exactly the result of the previous arrows. Reagents may appear in the step where they react; spectators may be dropped. Use <=> for reversible steps.
+2. Link: ${SITE}# followed by the MechScript text percent-encoded like encodeURIComponent (newline %0A, space %20, # %23, " %22), plus ( %28 and ) %29. Other characters may stay as they are; the page decodes leniently.
 3. Reply with the link as a clickable Markdown link and the code in a \`\`\`mechanism block.
 4. The page lists problems by line, with suggested fixes; if the user pastes them back, fix the code and send a new link.
 
