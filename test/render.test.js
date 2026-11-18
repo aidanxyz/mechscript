@@ -99,12 +99,30 @@ test('the renderer turns molecules itself when that clears a crossing (bromonium
 });
 
 test('crossings that remain become warnings with fixes that were verified', () => {
-  const code = readFileSync('test/cases/bromonium.mech', 'utf8');
-  const r = ms.toSVG(code, { autoOrient: false });
-  const w = r.warnings.find((x) => /runs through/.test(x.message));
+  // The optimiser routes every test mechanism cleanly, so switch it off to get a crossing to fix.
+  const opts = { autoOrient: false, optimizeArrows: false };
+  const code = readFileSync('test/ai/e2.mech', 'utf8');
+  const r = ms.toSVG(code, opts);
+  const w = r.warnings.find((x) => /crosses a bond/.test(x.message));
   assert.ok(w, JSON.stringify(r.warnings));
   const m = w.message.match(/try "face (\d+) (\w+)"/);
   assert.ok(m, w.message);
-  const fixed = code.replace('[CH2:1]=[CH2:2] + [Br:3][Br:4]', `[CH2:1]=[CH2:2] + [Br:3][Br:4]\n  face ${m[1]} ${m[2]}`);
-  assert.deepEqual(ms.toSVG(fixed, { autoOrient: false }).warnings, []);
+  const lines = code.split('\n');
+  const speciesLine = lines.findIndex((l) => l.includes(' + '));
+  lines.splice(speciesLine + 1, 0, `  face ${m[1]} ${m[2]}`);
+  const after = ms.toSVG(lines.join('\n'), opts).warnings.filter((x) => /crosses|runs through/.test(x.message));
+  assert.deepEqual(after, []);
+});
+
+test('curved arrows never bend back to touch themselves or turn into S shapes (all mechanisms)', () => {
+  const dirs = ['test/ai', 'test/cases', 'test/quality'];
+  const files = dirs.flatMap((d) => readdirSync(d).filter((f) => f.endsWith('.mech')).map((f) => readFileSync(`${d}/${f}`, 'utf8')));
+  for (const code of [...examples.map((e) => e.code), ...files]) {
+    const r = ms.toSVG(code);
+    for (const st of r.doc.states) for (const ar of st.arrows) {
+      assert.ok(ar.geo, `line ${ar.line} has a curve`);
+      assert.ok(!ar.geo.cramped, `${code.split('\n')[0]} line ${ar.line}: cramped arrow`);
+      assert.ok(!ar.geo.snake, `${code.split('\n')[0]} line ${ar.line}: S-shaped arrow`);
+    }
+  }
 });

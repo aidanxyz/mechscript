@@ -1,0 +1,11 @@
+mechanism "SNAr: methoxide + 4-fluoronitrobenzene"
+
+C[O-:1] + [F:3][C:2]1=[CH:4]C=C([N+](=O)[O-])C=C1
+  lp 1 -> 2
+  bond 2-4 -> 4
+--> "addition"
+C[O:1][C:2]1([F:3])[CH-:4]C=C([N+](=O)[O-])C=C1
+  lp 4 -> 4-2
+  bond 2-3 -> 3
+--> "elimination"
+C[O:1][C:2]1=[CH:4]C=C([N+](=O)[O-])C=C1 + [F-:3]

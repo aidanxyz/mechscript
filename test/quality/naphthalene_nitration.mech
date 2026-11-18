@@ -1,0 +1,11 @@
+mechanism "Nitration of naphthalene"
+
+[O:5]=[N+:1]=O + [H:3][C:2]1=[CH:4]C=CC2=CC=CC=C12
+  bond 4-2 -> 2-1
+  bond 1-5 -> 5
+--> "slow"
+[O-:5][N+:1](=O)[C:2]1([H:3])[CH+:4]C=CC2=CC=CC=C12 + [OH2:6]
+  lp 6 -> 3
+  bond 3-2 -> 2-4
+--> "fast"
+[O-:5][N+:1](=O)[C:2]1=[CH:4]C=CC2=CC=CC=C12 + [H:3][OH2+:6]

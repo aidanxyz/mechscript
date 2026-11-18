@@ -1,0 +1,14 @@
+mechanism "E1 dehydration of cyclohexanol"
+
+[H:2][O:1][CH:3]1[CH:4]([H:5])CCCC1 + [H:6][OH2+:7]
+  lp 1 -> 6
+  bond 6-7 -> 7
+-->
+[H:2][O+:1]([H:6])[CH:3]1[CH:4]([H:5])CCCC1 + [OH2:7]
+  bond 3-1 -> 1
+--> "slow"
+[CH+:3]1[CH:4]([H:5])CCCC1 + [H:2][O:1][H:6] + [OH2:7]
+  lp 7 -> 5
+  bond 5-4 -> 4-3
+-->
+[CH:3]1=[CH:4]CCCC1 + [H:5][OH2+:7]

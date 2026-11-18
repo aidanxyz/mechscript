@@ -1,0 +1,10 @@
+mechanism "Ketal formation: ring closure"
+
+C[C+:1](C)[O:2][CH2:3][CH2:4][O:5][H:7]
+  lp 5 -> 1
+--> "ring closure"
+C[C:1]1(C)[O:2][CH2:3][CH2:4][O+:5]1[H:7] + [OH2:8]
+  lp 8 -> 7
+  bond 7-5 -> 5
+--> "deprotonation"
+C[C:1]1(C)[O:2][CH2:3][CH2:4][O:5]1 + [H:7][OH2+:8]

@@ -1,0 +1,11 @@
+mechanism "Benzoyl chloride + ammonia"
+
+[NH3:1] + [Cl:4][C:2](=[O:3])C1=CC=CC=C1
+  lp 1 -> 2
+  bond 2-3 -> 3
+--> "addition"
+[NH3+:1][C:2]([O-:3])([Cl:4])C1=CC=CC=C1
+  lp 3 -> 3-2
+  bond 2-4 -> 4
+--> "elimination"
+[NH3+:1][C:2](=[O:3])C1=CC=CC=C1 + [Cl-:4]

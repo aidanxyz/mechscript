@@ -1,0 +1,11 @@
+mechanism "Cyclic hemiacetal from 5-hydroxypentanal"
+
+[H:7][O:1]CCCC[CH:3]=[O:4]
+  lp 1 -> 3
+  bond 3-4 -> 4
+-->
+[H:7][O+:1]1CCCC[CH:3]1[O-:4]
+  lp 4 -> 7
+  bond 7-1 -> 1
+--> "proton transfer"
+[O:1]1CCCC[CH:3]1[O:4][H:7]

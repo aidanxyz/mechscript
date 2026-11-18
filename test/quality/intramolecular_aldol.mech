@@ -1,0 +1,7 @@
+mechanism "Intramolecular aldol (Robinson annulation ring closure)"
+
+[CH2-:1][C:2](=O)CC[CH:7]1CCCC[C:3]1=[O:4]
+  lp 1 -> 3
+  bond 3-4 -> 4
+--> "ring closure"
+[O-:4][C:3]12CCCC[CH:7]1CC[C:2](=O)[CH2:1]2

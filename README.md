@@ -54,6 +54,16 @@ node tools/sheet.js --after --only cases
 
 Open `review/sheet.html` straight from disk. It contains only SVG, with no scripts and no RDKit in the browser.
 
+## Measuring drawing quality
+
+```bash
+npm run quality          # scores every mechanism, writes review/quality.html (worst first, issues circled)
+npm run quality:check    # exits 1 if any mechanism scores worse than test/quality/baseline.json
+node tools/quality.js --save-baseline   # accept the current scores as the new baseline
+```
+
+It covers the reference examples, `test/ai`, `test/cases` and the extra fixtures in `test/quality` (rings, fused and bridged systems, ring closures, pericyclic steps). Each drawing is measured for ring shape, bond lengths, bond angles, atoms or molecules too close together, molecules changing shape or turning between steps, and arrow crossings, detours, missed targets, arrows running too close to each other or skimming labels, bonds and "+" signs, arrows that bend back to touch themselves, and S-shaped arrows. Thresholds are at the top of `tools/quality.js`.
+
 ## How it works
 
 | File | Role |

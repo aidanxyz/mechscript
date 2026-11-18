@@ -1,0 +1,11 @@
+mechanism "Claisen condensation"
+
+[CH2-:1][C:2](=[O:3])OCC + C[C:4](=[O:5])[O:6]CC
+  lp 1 -> 4
+  bond 4-5 -> 5
+-->
+CCO[C:2](=[O:3])[CH2:1][C:4](C)([O-:5])[O:6]CC
+  lp 5 -> 5-4
+  bond 4-6 -> 6
+-->
+CCO[C:2](=[O:3])[CH2:1][C:4](C)=[O:5] + CC[O-:6]

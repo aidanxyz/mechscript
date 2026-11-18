@@ -1,0 +1,8 @@
+mechanism "Ozone + ethene: molozonide"
+
+[O-:1][O+:2]=[O:3] + [CH2:4]=[CH2:5]
+  lp 1 -> 4
+  bond 4-5 -> 5-3
+  bond 2-3 -> 2
+--> "−78 °C"
+[O:1]1[CH2:4][CH2:5][O:3][O:2]1

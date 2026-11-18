@@ -1,0 +1,13 @@
+mechanism "Radical HBr addition to 1-methylcyclohexene"
+
+[Br:1] + [CH:2]1=[C:3](C)CCCC1
+  rad 1 ~> 1-2
+  bond 2-3 ~> 1-2
+  bond 2-3 ~> 3
+-->
+[Br:1][CH:2]1[C:3](C)CCCC1 + [H:5][Br:6]
+  rad 3 ~> 3-5
+  bond 5-6 ~> 3-5
+  bond 5-6 ~> 6
+-->
+[Br:1][CH:2]1[C:3]([H:5])(C)CCCC1 + [Br:6]

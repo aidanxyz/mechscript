@@ -6,17 +6,21 @@
   "scripts": {
     "build": "node build.js",
     "test": "node --test test/*.test.js",
-    "serve": "python3 tools/serve.py 8377"
+    "serve": "python3 tools/serve.py 8377",
+    "quality": "node tools/quality.js",
+    "quality:check": "node tools/quality.js --check"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@rdkit/rdkit": "^2026.9.1",
-    "esbuild": "^0.28.2"
+    "@rdkit/rdkit": "^2026.9.1"
   },
   "type": "module",
   "bin": {
     "mechscript": "bin/mechscript.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }

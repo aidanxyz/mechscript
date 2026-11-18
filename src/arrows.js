@@ -31,7 +31,11 @@ export const COST = {
   dotClash: 90, // two arrows starting from the same lone-pair slot
   ringFace: 60, // cutting across a ring that the arrow does not move electrons around
   degenerate: 300, // curve too short to arch, or arrowhead not following the curve
+  cramped: 150, // the curve comes back close to itself, or its head lands next to its own tail
+  snake: 150, // the curve bends one way and then the other
+  near: 45, // passing closer than CLEAR px to something the arrow is not about (full cost when touching)
 };
+const CLEAR = 8;
 
 const SCALES = [0.55, 0.85, 1.25, 1.75, 2.6];
 const PEAKS = [0.5, 0.32, 0.68, 0.18, 0.82];
@@ -233,6 +237,45 @@ function buildCandidate(ep0, o, { side, scale, t, perp, along }) {
     C1 = V.lerp(S, C, 2 / 3);
     C2 = V.lerp(E, C, 2 / 3);
   }
+  return finishCandidate(ep, o, { S, C, C1, C2, E, T, t: sh.t, h: sh.h, chordLen: sh.clen, dot, side: perp ? perp.side : side, scale });
+}
+
+// Hook: the shape for an arrow whose ends are close together (a bond's electrons moving onto one of its own
+// atoms, a lone pair becoming the bond next to it). It leaves its source at right angles, and arrives at
+// the target from the side (phi: angle of the arrival point around the target, measured from the source
+// side), so the tail and head stay apart and the curve is a single open arch that cannot touch itself.
+function buildHook(ep, o, { side, phi, scale }) {
+  const T = ep.T;
+  const d = V.norm(V.sub(T, ep.S0));
+  const nrm = V.mul(V.perp(d), side);
+  let S = ep.S0;
+  let leave = nrm;
+  let dot = null;
+  if (ep.bondNormal) {
+    const out = V.mul(ep.bondNormal, V.dot(ep.bondNormal, nrm) >= 0 ? 1 : -1);
+    S = V.add(ep.S0, V.mul(out, 4));
+    // leave the bond outwards but already leaning towards the target, so the curve never swings away first
+    leave = V.norm(V.add(out, V.mul(d, 0.7)));
+  } else if (ep.dot) {
+    const { sp, i } = ep.dot;
+    const dd = sp.geo.dotFor(i, V.norm(V.add(nrm, V.mul(d, 0.35))));
+    dot = { ...ep.dot, angle: dd.t };
+    leave = dd.dir;
+    S = V.add({ x: dd.center.x + sp.geo.dx, y: dd.center.y + sp.geo.dy }, V.mul(dd.dir, 3));
+  }
+  const u = V.norm(V.add(V.mul(d, -Math.cos(phi)), V.mul(nrm, Math.sin(phi))));
+  const E = ep.targetAtom ? endPoint(ep, V.add(T, V.mul(u, 60))) : V.add(T, V.mul(u, 5));
+  const chord = Math.max(V.len(V.sub(E, S)), 1);
+  const k = chord * scale;
+  const C1 = V.add(S, V.mul(leave, k));
+  const C2 = V.add(E, V.mul(V.norm(V.sub(E, T)), k));
+  const C = { x: (3 * (C1.x + C2.x) - S.x - E.x) / 4, y: (3 * (C1.y + C2.y) - S.y - E.y) / 4 };
+  return finishCandidate(ep, o, { S, C, C1, C2, E, T, t: 0.5, h: 0, chordLen: chord, dot, side, scale, hook: true });
+}
+
+function finishCandidate(ep, o, c) {
+  const L = o.bondLength;
+  const { S, C1, C2, E, T } = c;
   const pts = [];
   for (let k = 0; k <= N; k++) pts.push(cubic(S, C1, C2, E, k / N));
   let length = 0;
@@ -248,7 +291,21 @@ function buildCandidate(ep0, o, { side, scale, t, perp, along }) {
   const cross = (q) => se.x * (q.y - S.y) - se.y * (q.x - S.x);
   const sCurve = cross(C1) * cross(C2) < 0 && Math.min(Math.abs(cross(C1)), Math.abs(cross(C2))) / Math.max(1, V.len(se)) > 1.5;
   const degenerate = sCurve || V.len(V.sub(E, C2)) < 6 || length < L * 0.6 || sag < Math.max(5, 0.12 * V.len(se));
-  return { S, C, C1, C2, E, T, t: sh.t, h: sh.h, chordLen: sh.clen, nrm: V.perp(V.norm(V.sub(T, S))), samples: pts, inner, length, dot, side: perp ? perp.side : side, scale, degenerate };
+  // cramped: far-apart parts of the curve (a third of it or more) come within 6 px, or the head lands
+  // next to the tail; snake: the curve's bend changes direction
+  let selfGap = V.len(se);
+  const far = Math.ceil(pts.length / 3);
+  for (let i = 0; i < pts.length; i++) for (let j = i + far; j < pts.length; j++) selfGap = Math.min(selfGap, V.len(V.sub(pts[i], pts[j])));
+  const cramped = selfGap < 6;
+  let turns = 0; let last = 0;
+  for (let k = 2; k < pts.length; k++) {
+    const a = V.sub(pts[k - 1], pts[k - 2]); const b = V.sub(pts[k], pts[k - 1]);
+    const tt = Math.atan2(a.x * b.y - a.y * b.x, V.dot(a, b));
+    if (Math.abs(tt) < 0.035) continue;
+    if (last && Math.sign(tt) !== last) turns++;
+    last = Math.sign(tt);
+  }
+  return { ...c, nrm: V.perp(V.norm(V.sub(T, S))), samples: pts, inner, length, degenerate, cramped, snake: turns > 0 };
 }
 
 // ---------- obstacles of one step, in page coordinates ----------
@@ -290,9 +347,25 @@ function crossesBond(samples, b) {
   return false;
 }
 
+// Closest approach (px) of curve points to anything the arrow is not about.
+function clearance(pts, ep, ob) {
+  const own = new Set([...ep.ar.from.atoms, ...ep.ar.to.atoms]);
+  const mine = (sp, i) => { const m = sp.mol.atoms[i].map; return m != null && own.has(m); };
+  let d = Infinity;
+  const box = (p, c, hw, hh) => Math.max(0, Math.max(Math.abs(p.x - c.x) - hw, Math.abs(p.y - c.y) - hh));
+  for (const p of pts) {
+    for (const b of ob.bonds) if (!mine(b.sp, b.atoms[0]) && !mine(b.sp, b.atoms[1])) d = Math.min(d, distPointSeg(p, b.a, b.b));
+    for (const l of ob.labels) if (!mine(l.sp, l.atom)) d = Math.min(d, box(p, l.c, l.hw - 1.5, l.hh - 1.5));
+    for (const c of ob.charges) if (!mine(c.sp, c.atom)) d = Math.min(d, V.len(V.sub(p, c.c)) - c.r + 1);
+    for (const fz of ob.furniture) d = Math.min(d, box(p, { x: fz.c.x, y: fz.c.y - fz.r * 0.09 }, fz.r * 0.6, fz.r * 0.6));
+    for (const sg of ob.furnitureSegs) d = Math.min(d, distPointSeg(p, sg.a, sg.b));
+  }
+  return d;
+}
+
 function unaryCost(cand, ep, ob) {
   const pts = cand.inner;
-  let cost = cand.length * COST.length + (cand.degenerate ? COST.degenerate : 0);
+  let cost = cand.length * COST.length + (cand.degenerate ? COST.degenerate : 0) + (cand.cramped ? COST.cramped : 0) + (cand.snake ? COST.snake : 0);
   if (cand.side && cand.side !== ep.awaySide) cost += COST.offSide;
   if (pts.length < 2) return cost;
   for (const b of ob.bonds) if (!ownBond(ep.ar, b) && crossesBond(cand.samples, b)) cost += COST.bondCross;
@@ -312,6 +385,9 @@ function unaryCost(cand, ep, ob) {
     if (!allOn && cand.samples.slice(1, -1).some((p) => inPoly(p, r.poly))) cost += COST.ringFace;
   }
   for (const fz of ob.furniture) if (pts.some((p) => V.len(V.sub(p, fz.c)) < fz.r)) cost += COST.furniture;
+  // clearance: an arrow that skims a label, bond, charge, "+" sign or reaction arrow reads as touching it
+  const near = clearance(pts, ep, ob);
+  if (near < CLEAR) cost += COST.near * (1 - Math.max(0, near) / CLEAR);
   for (const s of ob.furnitureSegs) {
     for (let k = 1; k < pts.length; k++) if (segIntersect(pts[k - 1], pts[k], s.a, s.b)) { cost += COST.furniture; break; }
   }
@@ -358,6 +434,11 @@ export function placeArrows(state, units, byMap, o) {
     const peaks = o.fastArrows ? [0.5, 0.32, 0.68] : PEAKS;
     const list = [];
     for (const side of sides) for (const scale of scales) for (const t of peaks) list.push(buildCandidate(ep, o, { side, scale, t }));
+    // ends close together: open hooks that arrive at the target from the side
+    if (V.len(V.sub(ep.T, ep.S0)) < 1.4 * o.bondLength && ar.place?.size !== 'wide') {
+      const phis = o.fastArrows ? [2.0] : [1.6, 2.0, 2.4];
+      for (const side of sides) for (const phi of phis) for (const scale of [0.45, 0.65, 0.85]) list.push(buildHook(ep, o, { side, phi, scale }));
+    }
     if (o.fastArrows) return list;
     if (ep.bondEnds) {
       for (const along of [0.36, 0.64]) for (const side of sides) for (const scale of [0.85, 1.25]) list.push(buildCandidate(ep, o, { side, scale, t: 0.5, along }));

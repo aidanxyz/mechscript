@@ -1,0 +1,11 @@
+mechanism "Carbinolamine from cyclohexanone and methylamine"
+
+C[NH:1][H:4] + [C:2]1(=[O:3])CCCCC1
+  lp 1 -> 2
+  bond 2-3 -> 3
+-->
+C[NH+:1]([H:4])[C:2]1([O-:3])CCCCC1
+  lp 3 -> 4
+  bond 4-1 -> 1
+--> "proton transfer"
+C[NH:1][C:2]1([O:3][H:4])CCCCC1

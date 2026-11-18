@@ -1,0 +1,7 @@
+mechanism "Hydroboration of propene"
+
+[CH2:1]=[CH:2]C + [BH2:3][H:4]
+  bond 1-2 -> 1-3
+  bond 3-4 -> 4-2
+--> "THF"
+[BH2:3][CH2:1][CH:2]([H:4])C

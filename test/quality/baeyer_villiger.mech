@@ -1,0 +1,8 @@
+mechanism "Baeyer–Villiger: Criegee intermediate to caprolactone"
+
+C[C:1](=O)[O:2][O:3][C:4]1([OH:5])CCCC[CH2:6]1
+  bond 4-6 -> 6-3
+  bond 3-2 -> 2
+  lp 5 -> 5-4
+--> "migration"
+[OH+:5]=[C:4]1[O:3][CH2:6]CCCC1 + C[C:1](=O)[O-:2]

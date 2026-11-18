@@ -1,0 +1,12 @@
+mechanism "Bromination of cyclohexene"
+
+[CH:1]1=[CH:2]CCCC1 + [Br:3][Br:4]
+  bond 1-2 -> 1-3
+  lp 3 -> 3-2
+  bond 3-4 -> 4
+-->
+[Br+:3]1[CH:1]2CCCC[CH:2]12 + [Br-:4]
+  lp 4 -> 2
+  bond 2-3 -> 3
+--> "anti addition"
+[Br:3][CH:1]1CCCC[CH:2]1[Br:4]

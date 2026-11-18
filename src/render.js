@@ -284,7 +284,8 @@ export function render(doc, options = {}) {
   const bg = o.background ? `<rect x="${f(vb.x0 - pad)}" y="${f(vb.y0 - pad)}" width="${f(W)}" height="${f(H)}" fill="${o.background}"/>` : '';
   const defs = `<defs><marker id="ms-head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${o.color}"/></marker></defs>`;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" class="mechscript" viewBox="${f(vb.x0 - pad)} ${f(vb.y0 - pad)} ${f(W)} ${f(H)}" width="${f(W)}" height="${f(H)}" font-family="${esc(o.fontFamily)}" role="img" aria-label="${esc(doc.title || 'reaction mechanism')}">${defs}${bg}${parts.join('')}</svg>`;
-  return { svg, width: W, height: H, report: arrowReport(doc, o) };
+  // units: the laid-out species, '+' signs and reaction arrows (positions in SVG coordinates), for tools
+  return { svg, width: W, height: H, report: arrowReport(doc, o), units };
 }
 
 // ---------------- species ----------------

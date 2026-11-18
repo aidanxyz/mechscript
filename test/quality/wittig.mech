@@ -1,0 +1,14 @@
+mechanism "Wittig reaction"
+
+[CH2-:1][P+:2](C)(C)C + C[C:3](C)=[O:4]
+  lp 1 -> 3
+  bond 3-4 -> 4
+--> "betaine"
+C[C:3](C)([O-:4])[CH2:1][P+:2](C)(C)C
+  lp 4 -> 2
+--> "oxaphosphetane"
+C[C:3]1(C)[CH2:1][P:2](C)(C)(C)[O:4]1
+  bond 3-4 -> 4-2
+  bond 1-2 -> 1-3
+-->
+C[C:3](C)=[CH2:1] + C[P:2](C)(C)=[O:4]

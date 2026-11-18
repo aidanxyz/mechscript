@@ -1,0 +1,7 @@
+mechanism "Epoxide opening by methoxide"
+
+C[O-:1] + C[CH:2]1[CH2:3][O:4]1
+  lp 1 -> 3
+  bond 3-4 -> 4
+--> "MeOH"
+C[O:1][CH2:3][CH:2](C)[O-:4]

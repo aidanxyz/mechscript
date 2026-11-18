@@ -1,0 +1,10 @@
+mechanism "Friedel–Crafts acylation"
+
+C[C+:1]=[O:2] + [H:5][C:3]1=[CH:4]C=CC=C1
+  bond 4-3 -> 3-1
+--> "slow"
+C[C:1](=[O:2])[C:3]1([H:5])[CH+:4]C=CC=C1 + [Cl-:6]
+  lp 6 -> 5
+  bond 5-3 -> 3-4
+--> "fast"
+C[C:1](=[O:2])[C:3]1=[CH:4]C=CC=C1 + [H:5][Cl:6]
